@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h3>Enter your details</h3>
+        <form action="http://localhost:5000/employees/add" method="post">
+            <div>
+                <input type="text" id="_id" name="_id" placeholder="Enter id">
+            </div>
+            <div>
+                <input type="text" id="emp_name" name="emp_name" placeholder="Enter name">
+            </div>
+            <div>
+                <input type="text" id="emp_email" name="emp_email" placeholder="Enter Email">
+            </div>
+            <div>
+                <input type="number" id="emp_salary" name="emp_salary" placeholder="Enter Salary">
+            </div>
+            <button type="submit">Submit</button>
+            <button type="reset">Reset</button>
+        </form>
+    </div>
+</body>
+</html>
