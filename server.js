@@ -1,21 +1,15 @@
-const { getAllEmployee, getEmployeeById, addEmployee } = require('./api/EmployeeApi');
 const mongoDB = require("./config/mongoDB");
 const express = require('express');
-const bodyParser = require('body-parser');
-// const { getAllUsers } = require("./api/usersApi");
 const connectDB = require("./config/mysqlDB");
-const { getAllUsers, getUserById, addUser, updateUser, deleteUser } = require('./api/usersApi');
-const { middle1, middle2 } = require('./middlewares/middleware');
-const multer = require("multer")
+const { getAllUsers, getUserById, addUser, updateUser, deleteUser } = require('./controllers/userControllers');
+const multer = require("multer");
+const { getAllCars, getCarById, addCar, deleteCarByID, updateCar } = require("./controllers/carControllers");
 require('dotenv').config()
-console.log(process.env) // remove this 
 
 
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-
-
 
 const app = express();
 
@@ -25,42 +19,56 @@ app.use(express.json());
 // app.use(middle2);
 
 mongoDB();
- const connection = connectDB();
-app.listen(5000, ()=>{ console.log("Application Server is running on port 5000")});
+let connection;
+
+app.listen(5000, async()=>{ 
+    connection = await connectDB();
+    console.log("Application Server is running on port 5000")
+});
 
 app.get('/', function(req, res){
     res.send("Welcome to first node with express");
 })
 
-app.get('/employees/getAll', async function(req, res){
-    const data = await getAllEmployee();
+// ******************* Car Api Function *************************** 
+
+app.get('/api/cars/getAll', async function(req, res){
+    const data = await getAllCars(connection);
     res.send(data);
 })
 
-app.get('/employees/get/:emp_id', async function(req, res){
-    const data = await getEmployeeById(req.params.emp_id);
+app.get('/api/cars/get/:id', async function(req, res){
+    const data = await getCarById(connection, req.params.id);
     res.send(data);
 })
 
-const parser = bodyParser.urlencoded({extended:true})
-app.post('/employees/add', parser, async function(req,res) {
-    console.log(req.body);
-    const data = await addEmployee(req.body);
+app.post('/api/cars/add', async function(req, res){
+    const data = await addCar(connection, req.body);
     res.send(data);
 })
-// app.post()
+
+app.delete('/api/cars/delete/:id', async function(req, res){
+    const data = await deleteCarByID(connection, req.params.id);
+    res.send(data);
+})
+
+app.put('/api/cars/update/:id', async function(req, res){
+    // console.log(req.params.id, req.body);
+    const data = await updateCar(connection, req.params.id, req.body);
+    res.send(data);
+});
 
 
+// ******************* User Api Function *************************** 
 app.get('/users/getAll', async function(req, res){
-    const data = await getAllUsers({});
+    const data = await getAllUsers(connection,{});
     res.send(data);
 })
 
 app.get('/users/get/:id', async function(req, res){
-    const data = await getUserById(req.params.id);
+    const data = await getUserById(connection,req.params.id);
     res.send(data);
 })
-
 
 // app.post('/users/add', parser, async function(req,res) {
 //     console.log("hello");
@@ -88,4 +96,3 @@ app.delete('/users/delete/:id', async function(req, res){
     const data = await deleteUser(req.params.id);
     res.send(data);
 })
-

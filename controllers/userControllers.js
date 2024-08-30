@@ -5,9 +5,9 @@ const upload = multer({ storage: storage });
 
 
 
-const getAllUsers = async () => {
+const getAllUsers = async (connection) => {
     try {
-        const connection = await connectDB();
+        console.log(connection);
         const [results, fields] = await connection.query('SELECT * from users');
         return results;
     } catch (error) {
@@ -15,9 +15,8 @@ const getAllUsers = async () => {
     }
 };
 
-const getUserById = async (id) => {
+const getUserById = async (connection ,id) => {
     try {
-        const connection = await connectDB();
         const [result] = await connection.query(`select * from users where user_id = ${id} `);
         return result;
         // console.log('user : ', result);
